@@ -4,7 +4,7 @@
    -----------------------------------------
 
    Anestis Bechtsoudis <anestis@census-labs.com>
-   Copyright 2015 by CENSUS S.A. All Rights Reserved.
+   Copyright 2015-2016 by CENSUS S.A. All Rights Reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@
 unsigned int log_minLevel;
 bool log_isStdioTTY;
 
-__attribute__ ((constructor)) 
+__attribute__ ((constructor))
 void log_init(void)
 {
     log_minLevel = l_INFO;
@@ -49,7 +49,7 @@ void log_setMinLevel(log_level_t dl)
     log_minLevel = dl;
 }
 
-void log_msg(log_level_t dl, bool perr, const char *file, 
+void log_msg(log_level_t dl, bool perr, const char *file,
         const char *func, int line, const char *fmt, ...)
 {
     struct {

@@ -32,6 +32,8 @@ anestisb@deephole:[dexRepair]: bin/dexRepair -I /tmp/samples
 
 ## Changelog
 
+* __0.1.1__ - 5 September 2016
+  * Add support for ODEX 037 format
 * __0.1.0__ - 14 February 2015
   * Initial commit
 

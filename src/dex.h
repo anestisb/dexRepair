@@ -4,7 +4,7 @@
    -----------------------------------------
 
    Anestis Bechtsoudis <anestis@census-labs.com>
-   Copyright 2015 by CENSUS S.A. All Rights Reserved.
+   Copyright 2015-2016 by CENSUS S.A. All Rights Reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ typedef int64_t   s8;
 #define ODEX_MAGIC "dey"
 #define API_LE_13  "035"
 #define API_GE_14  "036"
+#define API_GE_22  "037"
 #define SHA1Len    20
 
 typedef struct __attribute__((packed)) {
@@ -244,9 +245,10 @@ bool dex_isValidDexMagic(const dexHeader *pDexHeader)
          (memcmp(pDexHeader->magic.dex, ODEX_MAGIC, 3) != 0))   || // Check if ODEX
         (memcmp(pDexHeader->magic.nl,   "\n",      1) != 0)     || // Check for newline
         ((memcmp(pDexHeader->magic.ver, API_LE_13, 3) != 0) &&     // Check for API SDK <= 13
-         (memcmp(pDexHeader->magic.ver, API_GE_14, 3) != 0))    || // Check for API SDK >= 14
+         (memcmp(pDexHeader->magic.ver, API_GE_14, 3) != 0) &&     // Check for API SDK >= 14
+         (memcmp(pDexHeader->magic.ver, API_GE_22, 3) != 0))    || // Check for API SDK >= 22
         (memcmp(pDexHeader->magic.zero, "\0",      1) != 0)) {     // Check for zero
-        
+
         return false;
     }
     else return true;
