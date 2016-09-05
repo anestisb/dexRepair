@@ -10,7 +10,7 @@ readonly MAKE=$(which make)
 
 function usage()
 {
-  echo "$(basename $0) [gcc|clang|cross-android] (default is gcc)"
+  echo "$(basename "$0") [gcc|clang|cross-android] (default is gcc)"
   exit 1
 }
 
@@ -18,10 +18,10 @@ function build_cross_android()
 {
   # Search path for NDK if empty string
   if [[ "$NDK" == "" ]]; then
-    for i in $(echo $PATH | tr ":" "\n")
+    for i in $(echo "$PATH" | tr ":" "\n")
     do
       if echo "$i" | grep -q "android-ndk"; then
-        if [ -f $i/ndk-build ]; then
+        if [ -f "$i/ndk-build" ]; then
           NDK=$i
         fi
       fi
@@ -77,4 +77,3 @@ case "$1" in
   "cross-android") build_cross_android;;
   *) usage;;
 esac
- 
