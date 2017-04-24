@@ -1,12 +1,15 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# --{ Android build config }--
-# If empty string try to recover from path
-NDK=""
-#NDK=/Developer/android/android-ndk-r10d/
-# --{ End of Android build config }--
+set -e # fail on unhandled error
+set -u # fail on undefined variable
+#set -x # debug
 
-readonly MAKE=$(which make)
+declare -a sysTools=( "make" )
+
+function commandExists()
+{
+  type "$1" &> /dev/null
+}
 
 function usage()
 {
@@ -16,64 +19,71 @@ function usage()
 
 function build_cross_android()
 {
-  # Search path for NDK if empty string
-  if [[ "$NDK" == "" ]]; then
-    for i in $(echo "$PATH" | tr ":" "\n")
-    do
-      if echo "$i" | grep -q "android-ndk"; then
-        if [ -f "$i/ndk-build" ]; then
-          NDK=$i
-        fi
-      fi
-    done
-  fi
-  if [[ "$NDK" == "" ]]; then
+  local cpu cpuBaseDir
+  if [[ -z ${NDK+x} ]]; then
+    # Search in $PATH
+    if [[ $(which ndk-build) != "" ]]; then
+      NDK=$(dirname "$(which ndk-build)")
+    else
       echo "[-] Could not detect Android NDK dir"
       exit 1
+    fi
   fi
 
   ndk-build clean
-  ndk-build
-  if [ $? -ne 0 ]; then
+  ndk-build || {
     echo "[-] android build failed"
     exit 1
-  fi
+  }
+
+  find libs -type d -mindepth 1 -maxdepth 1 | while read -r cpuBaseDir
+  do
+    cpu=$(basename "$cpuBaseDir")
+    cp libs/"$cpu"/dexRepair bin/dexRepair-"$cpu"
+  done
 }
 
-function build_gcc()
+function build()
 {
-  make clean -C src
-  cc=gcc make -C src
-  if [ $? -ne 0 ]; then
-    echo "[-] gcc build failed"
+  local compiler="$1"
+
+  make clean -C src || {
+    echo "[-] make clean failed"
     exit 1
-  fi
-}
+  }
 
-function build_clang()
-{
-  make clean -C src
-  CC=clang make -C src
-  if [ $? -ne 0 ]; then
+  CC=$compiler make -C src || {
     echo "[-] clang build failed"
     exit 1
-  fi
+  }
 }
 
-if [[ "$MAKE" == "" ]]; then
-  echo "[-] Missing make utils"
-  exit 1
-fi
+# Check that common system tools exist
+for i in "${sysTools[@]}"
+do
+  if ! commandExists "$i"; then
+    echo "[-] '$i' command not found"
+    exit 1
+  fi
+done
 
 if [ $# -gt 1 ]; then
   echo "[-] Invalid args"
-  exit 0
+  exit 1
 fi
 
-case "$1" in
-  "") build_gcc;;
-  "gcc") build_gcc;;
-  "clang") build_clang;;
+if [ $# -eq 0 ]; then
+  target=""
+else
+  target="$1"
+fi
+
+case "$target" in
+  "") build "gcc";;
+  "gcc") build "gcc";;
+  "clang") build "clang";;
   "cross-android") build_cross_android;;
   *) usage;;
 esac
+
+exit 0
