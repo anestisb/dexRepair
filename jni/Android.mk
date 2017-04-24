@@ -2,7 +2,7 @@
 #   -----------------------------------------
 #
 #   Anestis Bechtsoudis <anestis@census-labs.com>
-#   Copyright 2015 by CENSUS S.A. All Rights Reserved.
+#   Copyright 2015-2017 by CENSUS S.A. All Rights Reserved.
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -24,13 +24,6 @@ LOCAL_MODULE    := dexRepair
 SRC             := ../src
 LOCAL_SRC_FILES := $(SRC)/dexRepair.c $(SRC)/log.c $(SRC)/utils.c
 LOCAL_CFLAGS    += -c -std=c11 -D_GNU_SOURCE \
-	           -Wall -Wextra -Werror
+                   -Wall -Wextra -Werror
 LOCAL_LDFLAGS   += -lm -lz
-
 include $(BUILD_EXECUTABLE)
-
-# Copy files to bin folder with naming convention for convenience
-all:POST_BUILD_EVENT
-POST_BUILD_EVENT:
-	cp libs/armeabi/dexRepair bin/dexRepair_arm
-

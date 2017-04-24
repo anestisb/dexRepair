@@ -2,7 +2,7 @@
 #   -----------------------------------------
 #
 #   Anestis Bechtsoudis <anestis@census-labs.com>
-#   Copyright 2015 by CENSUS S.A. All Rights Reserved.
+#   Copyright 2015-2017 by CENSUS S.A. All Rights Reserved.
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -17,3 +17,4 @@
 #   limitations under the License.
 
 APP_PLATFORM := android-21
+APP_ABI := armeabi armeabi-v7a arm64-v8a x86 x86_64
