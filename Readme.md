@@ -32,6 +32,9 @@ anestisb@deephole:[dexRepair]: bin/dexRepair -I /tmp/samples
 
 ## Changelog
 
+* __0.1.2__ - 24 April 2017
+  * Refactor readdir utils
+  * Improve make script & Android.mk
 * __0.1.1__ - 5 September 2016
   * Add support for ODEX 037 format
 * __0.1.0__ - 14 February 2015
@@ -41,7 +44,7 @@ anestisb@deephole:[dexRepair]: bin/dexRepair -I /tmp/samples
 
 ```
    Anestis Bechtsoudis <anestis@census-labs.com>
-   Copyright 2015 by CENSUS S.A. All Rights Reserved.
+   Copyright 2015-2017 by CENSUS S.A. All Rights Reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
