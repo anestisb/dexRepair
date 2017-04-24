@@ -39,29 +39,22 @@ static bool utils_readdir(infiles_t *pFiles)
     }
 
     size_t count = 0;
-
     for (;;) {
-        struct dirent de, *res;
-        if (readdir_r(dir, &de, &res) > 0) {
-            LOGMSG_P(l_ERROR, "Couldn't read the '%s' dir", pFiles->inputFile);
-            closedir(dir);
+        errno = 0;
+        struct dirent *entry = readdir(dir);
+        if (entry == NULL && errno == EINTR) {
+            continue;
+        }
+        if (entry == NULL && errno != 0) {
+            LOGMSG_P(l_ERROR, "readdir('%s')", pFiles->inputFile);
             return false;
         }
-
-        if (res == NULL && count > 0) {
-            LOGMSG(l_INFO, "%u input files have been added to the list", pFiles->fileCnt);
-            closedir(dir);
-            return true;
-        }
-
-        if (res == NULL && count == 0) {
-            LOGMSG(l_ERROR, "Directory '%s' doesn't contain any regular files", pFiles->inputFile);
-            closedir(dir);
-            return false;
+        if (entry == NULL) {
+            break;
         }
 
         char path[PATH_MAX];
-        snprintf(path, sizeof(path), "%s/%s", pFiles->inputFile, res->d_name);
+        snprintf(path, sizeof(path), "%s/%s", pFiles->inputFile, entry->d_name);
 
         struct stat st;
         if (stat(path, &st) == -1) {
@@ -96,9 +89,14 @@ static bool utils_readdir(infiles_t *pFiles)
         LOGMSG(l_DEBUG, "Added '%s' to the list of input files", path);
     }
 
-    /* NOTREACHED */
-    abort();
-    return false;
+    closedir(dir);
+    if (count == 0) {
+        LOGMSG(l_ERROR, "Directory '%s' doesn't contain any regular files", pFiles->inputFile);
+        return false;
+    }
+
+    LOGMSG(l_INFO, "%u input files have been added to the list", pFiles->fileCnt);
+    return true;
 }
 
 bool utils_init(infiles_t *pFiles)
