@@ -4,7 +4,7 @@
    -----------------------------------------
 
    Anestis Bechtsoudis <anestis@census-labs.com>
-   Copyright 2015-2016 by CENSUS S.A. All Rights Reserved.
+   Copyright 2015-2017 by CENSUS S.A. All Rights Reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -39,6 +39,8 @@ static void usage(bool exit_success)
     printf("%s",
         "  " AB "-I,  --input-files=DIR" AC " : "
             "input files dirs (1 level recursion only) or single file\n"
+        "  " AB "-S,  --repair-sha" AC "            : "
+            "repair SHA-1 hash too (default: disabled)\n"
         "  " AB "-h,  --help" AC "            : "
             "this help\n"
         "  " AB "-v,  --debug=LEVEL" AC "     : "
@@ -52,6 +54,7 @@ static void usage(bool exit_success)
 int main(int argc, char **argv)
 {
     int c;
+    bool repairSHA = false;
 
     /* Default values */
     infiles_t pFiles = {
@@ -65,9 +68,9 @@ int main(int argc, char **argv)
 
     struct option longopts[] = {
         {"input-files", required_argument, 0, 'I'},
+        {"repair-sha",  no_argument,       0, 'S'},
         {"help",        no_argument,       0, 'h'},
         {"debug",       required_argument, 0, 'v'},
-        //{"repair-sha",  no_argument,       0, 'S'}, /* TODO */
         {0,             0,                 0, 0  }
     };
 
@@ -75,6 +78,9 @@ int main(int argc, char **argv)
         switch (c) {
         case 'I':
             pFiles.inputFile = optarg;
+            break;
+        case 'S':
+            repairSHA = true;
             break;
         case 'h':
             usage(true);
@@ -132,7 +138,16 @@ int main(int argc, char **argv)
             continue;
         }
 
-        /* Repair CRC */
+        /* First repair SHA-1 if enabled */
+        if (repairSHA) {
+            if(!dex_repairDexSHA1(buf, fileSz)) {
+                LOGMSG(l_ERROR, "Failed to repair SHA-1 hash from '%s' - skipping",
+                       pFiles.files[f]);
+                continue;
+            }
+        }
+
+        /* Finally repair CRC */
         dex_repairDexCRC(buf, fileSz);
 
         char outFile[NAME_MAX] = { 0 };

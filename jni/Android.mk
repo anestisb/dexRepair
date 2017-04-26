@@ -22,7 +22,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_MODULE    := dexRepair
 SRC             := ../src
-LOCAL_SRC_FILES := $(SRC)/dexRepair.c $(SRC)/log.c $(SRC)/utils.c
+LOCAL_SRC_FILES := $(SRC)/dexRepair.c $(SRC)/log.c $(SRC)/utils.c $(SRC)/sha1.c
 LOCAL_CFLAGS    += -c -std=c11 -D_GNU_SOURCE \
                    -Wall -Wextra -Werror
 LOCAL_LDFLAGS   += -lm -lz

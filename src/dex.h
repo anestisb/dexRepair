@@ -24,6 +24,7 @@
 #define _DEX_H_
 
 #include <zlib.h>
+#include "sha1.h"
 
 typedef uint8_t   u1;
 typedef uint16_t  u2;
@@ -39,7 +40,7 @@ typedef int64_t   s8;
 #define API_LE_13  "035"
 #define API_GE_14  "036"
 #define API_GE_22  "037"
-#define SHA1Len    20
+#define SHA1Len    SHA1HashSize
 
 typedef struct __attribute__((packed)) {
     char dex[3];
@@ -265,6 +266,31 @@ void dex_repairDexCRC(uint8_t *buf, off_t fileSz)
     const uint8_t *non_sum_ptr = (const uint8_t*)buf + non_sum;
     adler_checksum = adler32(adler_checksum, non_sum_ptr, fileSz - non_sum);
     memcpy(buf + sizeof(dexMagic), &adler_checksum, sizeof(uint32_t));
+}
+
+/*
+ * Repair DEX file SHA-1
+ */
+bool dex_repairDexSHA1(uint8_t *buf, off_t fileSz)
+{
+    const uint8_t sha1_off = sizeof(dexMagic) + sizeof(uint32_t);
+    const uint8_t non_sha1_off = sizeof(dexMagic) + sizeof(uint32_t) + (SHA1Len * sizeof(char));
+    const uint8_t *non_sha1_ptr = (const uint8_t*)buf + non_sha1_off;
+
+    SHA1Context sha;
+    if (SHA1Reset(&sha)) {
+        return false;
+    }
+
+    if (SHA1Input(&sha, non_sha1_ptr, fileSz - non_sha1_off)) {
+        return false;
+    }
+
+    if (SHA1Result(&sha, buf + sha1_off)) {
+        return false;
+    }
+
+    return true;
 }
 
 #endif

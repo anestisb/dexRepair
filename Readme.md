@@ -1,37 +1,41 @@
 # Dex Repair
 
-Command line tool to repair Android DEX bytecode files CRC checksum.
+Command line tool to repair Android DEX bytecode files CRC checksum and SHA-1
+hash
 
 
 ## Compile
 
 * Clone this repository
 * Install Android NDK if you want to cross-compile for Android devices
-* Invoke ```make.sh``` bash script with desired build target
-* Executables are copied under the ```bin``` path
-* Repair your dirty files :)
+* Invoke `make.sh` bash script with desired build target
+  * `$ ./make.sh` - default system compiler
+  * `$ ./make.sh gcc` - prefer gcc
+  * `$ ./make.sh clang` - prefer clang
+  * `$ ./make.sh cross-android` - cross-compile for Android with NDK
+* Executables are copied under the `bin` directory
+
 
 ## Usage
 
 ```
-anestisb@deephole:[dexRepair]:
-anestisb@deephole:[dexRepair]: bin/dexRepair -h
+$ ./bin/dexRepair -h
+    DEX Repair ver. 0.1.2
+
+    Anestis Bechtsoudis <anestis@census-labs.com>
+  Copyright 2015-2017 by CENSUS S.A. All Rights Reserved.
 
   -I,  --input-files=DIR : input files dirs (1 level recursion only) or single file
+  -S,  --repair-sha            : repair SHA-1 hash too (default: disabled)
   -h,  --help            : this help
   -v,  --debug=LEVEL     : debug level (0 - FATAL ... 4 - DEBUG), default: '3' (INFO)
-
-anestisb@deephole:[dexRepair]:
-anestisb@deephole:[dexRepair]: bin/dexRepair -I /tmp/samples
-
-[INFO] 12 input files have been added to the list
-[WARNING] Invalid magic number. Skipping 'samples/invalid_file'
-[INFO] 11 our of 12 files have been successfully repaired
-[INFO] Repaired DEX files available at '/tmp/samples'
 ```
+
 
 ## Changelog
 
+* __0.1.3__ - 26 April 2017
+  * Support to repair SHA-1 hash too
 * __0.1.2__ - 24 April 2017
   * Refactor readdir utils
   * Improve make script & Android.mk
@@ -39,6 +43,7 @@ anestisb@deephole:[dexRepair]: bin/dexRepair -I /tmp/samples
   * Add support for ODEX 037 format
 * __0.1.0__ - 14 February 2015
   * Initial commit
+
 
 ## License
 
