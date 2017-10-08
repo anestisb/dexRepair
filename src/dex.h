@@ -40,6 +40,8 @@ typedef int64_t   s8;
 #define API_LE_13  "035"
 #define API_GE_14  "036"
 #define API_GE_22  "037"
+#define API_26     "038"
+#define API_GT_26  "039"
 #define SHA1Len    SHA1HashSize
 
 typedef struct __attribute__((packed)) {
@@ -245,9 +247,11 @@ bool dex_isValidDexMagic(const dexHeader *pDexHeader)
     if (((memcmp(pDexHeader->magic.dex,  DEX_MAGIC, 3) != 0)    && // Check if DEX
          (memcmp(pDexHeader->magic.dex, ODEX_MAGIC, 3) != 0))   || // Check if ODEX
         (memcmp(pDexHeader->magic.nl,   "\n",      1) != 0)     || // Check for newline
-        ((memcmp(pDexHeader->magic.ver, API_LE_13, 3) != 0) &&     // Check for API SDK <= 13
-         (memcmp(pDexHeader->magic.ver, API_GE_14, 3) != 0) &&     // Check for API SDK >= 14
-         (memcmp(pDexHeader->magic.ver, API_GE_22, 3) != 0))    || // Check for API SDK >= 22
+        ((memcmp(pDexHeader->magic.ver, API_LE_13, 3) != 0) &&     // Check for API <= 13
+         (memcmp(pDexHeader->magic.ver, API_GE_14, 3) != 0) &&     // Check for API >= 14
+         (memcmp(pDexHeader->magic.ver, API_GE_22, 3) != 0) &&     // Check for API >= 22
+         (memcmp(pDexHeader->magic.ver, API_26,    3) != 0) &&     // Check for API == 26
+         (memcmp(pDexHeader->magic.ver, API_GT_26, 3) != 0))    || // Check for API > 26
         (memcmp(pDexHeader->magic.zero, "\0",      1) != 0)) {     // Check for zero
 
         return false;
