@@ -35,14 +35,20 @@ typedef int16_t   s2;
 typedef int32_t   s4;
 typedef int64_t   s8;
 
-#define DEX_MAGIC  "dex"
-#define ODEX_MAGIC "dey"
-#define API_LE_13  "035"
-#define API_GE_14  "036"
-#define API_GE_22  "037"
-#define API_26     "038"
-#define API_GT_26  "039"
-#define SHA1Len    SHA1HashSize
+#define kNumDexVersions 4
+#define kDexVersionLen 4
+#define kSHA1Len SHA1HashSize
+
+static const uint8_t kDexMagic[] = { 'd', 'e', 'x', '\n' };
+static const uint8_t kDexMagicVersions[kNumDexVersions][kDexVersionLen] = {
+  { '0', '3', '5', '\0' },
+  // Dex version 036 skipped
+  { '0', '3', '7', '\0' },
+  // Dex version 038: Android "O".
+  { '0', '3', '8', '\0' },
+  // Dex verion 039: Beyond Android "O".
+  { '0', '3', '9', '\0' },
+};
 
 typedef struct __attribute__((packed)) {
     char dex[3];
@@ -54,7 +60,7 @@ typedef struct __attribute__((packed)) {
 typedef struct __attribute__((packed)) {
     dexMagic magic;
     u4 checksum;
-    unsigned char signature[SHA1Len];
+    unsigned char signature[kSHA1Len];
     u4 fileSize;
     u4 headerSize;
     u4 endianTag;
@@ -229,20 +235,20 @@ typedef struct __attribute__((packed)) {
  */
 bool dex_isValidDexMagic(const dexHeader *pDexHeader)
 {
-    /* Validate DEX magic number */
-    if (((memcmp(pDexHeader->magic.dex,  DEX_MAGIC, 3) != 0)    && // Check if DEX
-         (memcmp(pDexHeader->magic.dex, ODEX_MAGIC, 3) != 0))   || // Check if ODEX
-        (memcmp(pDexHeader->magic.nl,   "\n",      1) != 0)     || // Check for newline
-        ((memcmp(pDexHeader->magic.ver, API_LE_13, 3) != 0) &&     // Check for API <= 13
-         (memcmp(pDexHeader->magic.ver, API_GE_14, 3) != 0) &&     // Check for API >= 14
-         (memcmp(pDexHeader->magic.ver, API_GE_22, 3) != 0) &&     // Check for API >= 22
-         (memcmp(pDexHeader->magic.ver, API_26,    3) != 0) &&     // Check for API == 26
-         (memcmp(pDexHeader->magic.ver, API_GT_26, 3) != 0))    || // Check for API > 26
-        (memcmp(pDexHeader->magic.zero, "\0",      1) != 0)) {     // Check for zero
+  /* Validate magic number */
+  if (memcmp(pDexHeader->magic.dex, kDexMagic, sizeof(kDexMagic)) != 0) {
+    return false;
+  }
 
-        return false;
+  /* Validate magic version */
+  const char *version = pDexHeader->magic.ver;
+  for (uint32_t i = 0; i < kNumDexVersions; i++) {
+    if (memcmp(version, kDexMagicVersions[i], kDexVersionLen) == 0) {
+      LOGMSG(l_DEBUG, "DEX version '%s' detected", pDexHeader->magic.ver);
+      return true;
     }
-    else return true;
+  }
+  return false;
 }
 
 /*
@@ -264,7 +270,7 @@ void dex_repairDexCRC(uint8_t *buf, off_t fileSz)
 bool dex_repairDexSHA1(uint8_t *buf, off_t fileSz)
 {
     const uint8_t sha1_off = sizeof(dexMagic) + sizeof(uint32_t);
-    const uint8_t non_sha1_off = sizeof(dexMagic) + sizeof(uint32_t) + (SHA1Len * sizeof(char));
+    const uint8_t non_sha1_off = sizeof(dexMagic) + sizeof(uint32_t) + (kSHA1Len * sizeof(char));
     const uint8_t *non_sha1_ptr = (const uint8_t*)buf + non_sha1_off;
 
     SHA1Context sha;
