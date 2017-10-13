@@ -225,20 +225,6 @@ typedef struct __attribute__((packed)) {
 } dexClassData;
 
 /*
- * Reads an unsigned LEB128 (Little-Endian Base 128) value, updating the
- * given pointer to point just past the end of the read value. This function
- * tolerates non-zero high-order bits in the fifth encoded byte.
- */
-extern uint32_t dex_readULeb128(const u1**);
-
-/*
- * Reads a signed LEB128 value, updating the given pointer to point
- * just past the end of the read value. This function tolerates
- * non-zero high-order bits in the fifth encoded byte.
- */
-extern int32_t dex_readSLeb128(const uint8_t**);
-
-/*
  * Verify if valid DEX file magic number
  */
 bool dex_isValidDexMagic(const dexHeader *pDexHeader)
