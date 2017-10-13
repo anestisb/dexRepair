@@ -39,7 +39,7 @@ static void usage(bool exit_success)
     printf("%s",
         "  " AB "-I,  --input-files=DIR" AC " : "
             "input files dirs (1 level recursion only) or single file\n"
-        "  " AB "-S,  --repair-sha" AC "            : "
+        "  " AB "-S,  --repair-sha" AC "      : "
             "repair SHA-1 hash too (default: disabled)\n"
         "  " AB "-h,  --help" AC "            : "
             "this help\n"

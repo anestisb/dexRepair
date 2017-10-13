@@ -26,7 +26,7 @@ $ ./bin/dexRepair -h
   Copyright 2015-2017 by CENSUS S.A. All Rights Reserved.
 
   -I,  --input-files=DIR : input files dirs (1 level recursion only) or single file
-  -S,  --repair-sha            : repair SHA-1 hash too (default: disabled)
+  -S,  --repair-sha      : repair SHA-1 hash too (default: disabled)
   -h,  --help            : this help
   -v,  --debug=LEVEL     : debug level (0 - FATAL ... 4 - DEBUG), default: '3' (INFO)
 ```
