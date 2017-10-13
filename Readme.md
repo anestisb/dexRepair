@@ -19,8 +19,8 @@ hash
 ## Usage
 
 ```
-$ ./bin/dexRepair -h
-    DEX Repair ver. 0.1.2
+$ bin/dexRepair -h
+    DEX Repair ver. 0.1.4
 
     Anestis Bechtsoudis <anestis@census-labs.com>
   Copyright 2015-2017 by CENSUS S.A. All Rights Reserved.
@@ -34,6 +34,8 @@ $ ./bin/dexRepair -h
 
 ## Changelog
 
+* __0.1.4__ - 13 October 2017
+  * Dex version 038 (Oreo) & 039 (dev-master) support
 * __0.1.3__ - 26 April 2017
   * Support to repair SHA-1 hash too
 * __0.1.2__ - 24 April 2017

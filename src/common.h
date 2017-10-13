@@ -32,7 +32,7 @@
 #include <errno.h>
 
 #define PROG_NAME    "DEX Repair"
-#define PROG_VERSION "0.1.2"
+#define PROG_VERSION "0.1.4"
 #define PROG_AUTHORS "    Anestis Bechtsoudis <anestis@census-labs.com>\n"\
                      "  Copyright 2015-2017 by CENSUS S.A. All Rights Reserved."
 
