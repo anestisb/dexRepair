@@ -36,7 +36,6 @@ typedef int32_t   s4;
 typedef int64_t   s8;
 
 #define kNumDexVersions 4
-#define kNumCDexVersions 1
 #define kDexVersionLen 4
 #define kSHA1Len SHA1HashSize
 
@@ -51,15 +50,11 @@ static const uint8_t kDexMagicVersions[kNumDexVersions][kDexVersionLen] = {
   { '0', '3', '9', '\0' },
 };
 
-static const uint8_t kCDexMagic[] = { 'c', 'd', 'e', 'x' };
-static const uint8_t kCDexMagicVersions[kNumCDexVersions][kDexVersionLen] = {
-  // Android P
-  { '0', '0', '1', '\0' },
-};
-
 typedef struct __attribute__((packed)) {
-    char dex[4];
-    char ver[4];
+    char dex[3];
+    char nl[1];
+    char ver[3];
+    char zero[1];
 } dexMagic;
 
 typedef struct __attribute__((packed)) {
@@ -250,13 +245,6 @@ bool dex_isValidDexMagic(const dexHeader *pDexHeader)
   for (uint32_t i = 0; i < kNumDexVersions; i++) {
     if (memcmp(version, kDexMagicVersions[i], kDexVersionLen) == 0) {
       LOGMSG(l_DEBUG, "DEX version '%s' detected", pDexHeader->magic.ver);
-      return true;
-    }
-  }
-
-  for (uint32_t i = 0; i < kNumCDexVersions; i++) {
-    if (memcmp(version, kCDexMagicVersions[i], kDexVersionLen) == 0) {
-      LOGMSG(l_DEBUG, "CDEX version '%s' detected", pDexHeader->magic.ver);
       return true;
     }
   }
