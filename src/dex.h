@@ -241,8 +241,7 @@ typedef struct __attribute__((packed)) {
 bool dex_isValidDexMagic(const dexHeader *pDexHeader)
 {
   /* Validate magic number */
-  if ((memcmp(pDexHeader->magic.dex, kDexMagic, sizeof(kDexMagic)) != 0) &&
-      (memcmp(pDexHeader->magic.dex, kCDexMagic, sizeof(kCDexMagic)) != 0)) {
+  if (memcmp(pDexHeader->magic.dex, kDexMagic, sizeof(kDexMagic)) != 0) {
     return false;
   }
 
